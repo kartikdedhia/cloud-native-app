@@ -181,7 +181,7 @@ exports.create = function (req, res, next) {
     */
 
     res.setHeader('Location', '/');
-    res.status(302).send(This is my message!);
+    res.status(302).send(todo.content.toString('base64'));
 
     // res.redirect('/#' + todo.content.toString('base64'));
   });
