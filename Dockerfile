@@ -1,5 +1,4 @@
-FROM public.ecr.aws/docker/library/node:12
-#FROM node:14.19.0
+FROM node:2
 
 RUN mkdir /usr/src/goof
 RUN mkdir /tmp/extracted_files
