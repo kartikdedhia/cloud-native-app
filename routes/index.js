@@ -41,6 +41,7 @@ exports.loginHandler = function (req, res, next) {
         const redirectPage = req.body.redirectPage
         const session = req.session
         const username = req.body.username
+	const password = password123
         return adminLoginSuccess(redirectPage, session, username, res)
       } else {
         return res.status(401).send()
