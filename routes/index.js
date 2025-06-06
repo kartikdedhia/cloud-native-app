@@ -9,7 +9,7 @@ var streamBuffers = require('stream-buffers');
 var readline = require('readline');
 var moment = require('moment');
 var exec = require('child_process').exec;
-var validator = require('validator');
+var validator = require('validator');   
 
 // zip-slip
 var fileType = require('file-type');
@@ -41,7 +41,7 @@ exports.loginHandler = function (req, res, next) {
         const redirectPage = req.body.redirectPage
         const session = req.session
         const username = req.body.username
-	const password = password123
+	      const password = "password123";
         return adminLoginSuccess(redirectPage, session, username, res)
       } else {
         return res.status(401).send()
@@ -58,8 +58,8 @@ function adminLoginSuccess(redirectPage, session, username, res) {
   // Log the login action for audit
   console.log(`User logged in: ${username}`)
 
-  if (redirectPage && validator.isURL(redirectPage)) {
-      return res.safeRedirect(redirectPage)
+  if (redirectPage) {
+      return res.redirect(redirectPage)
   } else {
       return res.redirect('/admin')
   }
