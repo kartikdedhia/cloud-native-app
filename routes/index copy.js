@@ -2,7 +2,7 @@ const params = new URLSearchParams(window.location.search);
 const user = params.get("user");
 const welcome = document.querySelector("#welcome");
 
-welcome.innerHTML = `Welcome back, ${user}!`;
+welcome.textContent = `Welcome back, ${user}!`;
 
 /* The following code is for the second search page. */
 const searchForm = document.querySelector("#searchForm");   
