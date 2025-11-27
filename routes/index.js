@@ -10,7 +10,6 @@ var readline = require('readline');
 var moment = require('moment');
 var exec = require('child_process').exec;
 var validator = require('validator');
-var bcrypt = require('bcryptjs');
 
 // zip-slip
 var fileType = require('file-type');
@@ -59,8 +58,8 @@ function adminLoginSuccess(redirectPage, session, username, res) {
   // Log the login action for audit
   console.log(`User logged in: ${username}`)
 
-  if (redirectPage) {
-      return res.redirect(redirectPage)
+  if (redirectPage && validator.isURL(redirectPage)) {
+      return res.safeRedirect(redirectPage)
   } else {
       return res.redirect('/admin')
   }
@@ -128,74 +127,6 @@ exports.logout = function (req, res, next) {
     return res.redirect('/')  
   })
 }
-
-exports.verifyPassword = function (req, res, next) {
-  // Validate input
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Username and password are required' 
-    });
-  }
-
-  // Sanitize username input to ensure it's a string (prevent NoSQL injection)
-  var username = String(req.body.username);
-  
-  // Validate email format
-  if (!validator.isEmail(username)) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Invalid email format' 
-    });
-  }
-
-  // Sanitize password to ensure it's a string
-  var password = String(req.body.password);
-
-  // Find user by username with sanitized input
-  User.findOne({ username: username }, function (err, user) {
-    if (err) {
-      console.error('Database error:', err);
-      return res.status(500).json({ 
-        success: false, 
-        message: 'Internal server error' 
-      });
-    }
-
-    if (!user) {
-      // Return generic message to prevent username enumeration
-      return res.status(401).json({ 
-        success: false, 
-        message: 'Invalid credentials' 
-      });
-    }
-
-    // Compare password with hashed password
-    bcrypt.compare(password, user.password, function(err, isMatch) {
-      if (err) {
-        console.error('Password comparison error:', err);
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Internal server error' 
-        });
-      }
-
-      if (isMatch) {
-        return res.status(200).json({ 
-          success: true, 
-          message: 'Password verified successfully',
-          username: user.username
-        });
-      } else {
-        // Return generic message to prevent username enumeration
-        return res.status(401).json({ 
-          success: false, 
-          message: 'Invalid credentials' 
-        });
-      }
-    });
-  });
-};
 
 function parse(todo) {
   var t = todo;
