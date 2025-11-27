@@ -41,6 +41,7 @@ exports.loginHandler = function (req, res, next) {
         const redirectPage = req.body.redirectPage
         const session = req.session
         const username = req.body.username
+	const password = password123
         return adminLoginSuccess(redirectPage, session, username, res)
       } else {
         return res.status(401).send()
@@ -57,8 +58,8 @@ function adminLoginSuccess(redirectPage, session, username, res) {
   // Log the login action for audit
   console.log(`User logged in: ${username}`)
 
-  if (redirectPage) {
-      return res.redirect(redirectPage)
+  if (redirectPage && validator.isURL(redirectPage)) {
+      return res.safeRedirect(redirectPage)
   } else {
       return res.redirect('/admin')
   }
